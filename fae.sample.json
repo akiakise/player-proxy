@@ -1,0 +1,5 @@
+{
+  "param": "path content for matching",
+  "app": "/path/to/app/when/matched",
+  "fallback": "/path/to/app/when/not/matched"
+}
