@@ -28,13 +28,15 @@ if __name__ == '__main__':
 
             logger.info(f'[Judge] Start judging...')
             logger.info(f'[Judge] File: {file}')
-            if config.param in file:
-                rule_command = f'{config.app} "{file}"'
-                logger.info(f'[Judge] run rule command: {rule_command}')
-                subprocess.run(rule_command)
-            else:
-                rule_command = f'{config.fallback} "{file}"'
-                logger.info(f'[Judge] run fallback command: {rule_command}')
-                subprocess.run(rule_command)
+            for rule in config.rules:
+                if rule.param in file:
+                    rule_command = f'{rule.app} "{file}"'
+                    logger.info(f'[Judge] run rule command: {rule_command}')
+                    subprocess.run(rule_command)
+                else:
+                    rule_command = f'{rule.fallback} "{file}"'
+                    logger.info(f'[Judge] run fallback command: {rule_command}')
+                    subprocess.run(rule_command)
+                break
     except Exception as e:
         logger.error(f'[Judge] Exception detected during judge', e)

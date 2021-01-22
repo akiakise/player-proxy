@@ -1,5 +1,14 @@
 {
-  "param": "path content for matching",
-  "app": "/path/to/app/when/matched",
-  "fallback": "/path/to/app/when/not/matched"
+  "rules": [
+    {
+      "param": "path 1",
+      "app": "app 1",
+      "fallback": "fallback 1"
+    },
+    {
+      "param": "path 2",
+      "app": "app 2",
+      "fallback": "fallback 2"
+    }
+  ]
 }
