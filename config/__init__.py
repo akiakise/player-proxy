@@ -1,6 +1,5 @@
 import json
 import os
-from types import SimpleNamespace
 
 DEFAULT_ENCODING = 'utf-8'
 PROJECT_NAME = 'fae'
@@ -21,4 +20,9 @@ DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 def load_config():
     if os.path.exists(FILENAME_CONFIG):
         with open(FILENAME_CONFIG, mode='r', encoding=DEFAULT_ENCODING) as f:
-            return json.loads(f.read(), object_hook=lambda data: SimpleNamespace(**data))
+            return json.load(f)
+
+
+def write_config(config):
+    with open(FILENAME_CONFIG, mode='w', encoding=DEFAULT_ENCODING) as f:
+        f.write(json.dumps(config, default=lambda o: o.__dict__, sort_keys=True, indent=2))

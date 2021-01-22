@@ -1,14 +1,13 @@
 {
+  "fallback": "default fallback",
   "rules": [
     {
-      "param": "path 1",
       "app": "app 1",
-      "fallback": "fallback 1"
+      "folder": "folder 1"
     },
     {
-      "param": "path 2",
       "app": "app 2",
-      "fallback": "fallback 2"
+      "folder": "folder 2"
     }
   ]
 }

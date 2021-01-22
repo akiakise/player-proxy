@@ -19,9 +19,17 @@ Make a copy of [fae.sample.json](fae.sample.json), named `fae.json`, change the 
 
 ```json
 {
-  "param": "path content for matching",
-  "app": "/path/to/app/when/matched",
-  "fallback": "/path/to/app/when/not/matched"
+  "fallback": "default fallback",
+  "rules": [
+    {
+      "app": "app 1",
+      "folder": "folder 1"
+    },
+    {
+      "app": "app 2",
+      "folder": "folder 2"
+    }
+  ]
 }
 ```
 
