@@ -28,19 +28,21 @@ if __name__ == '__main__':
 
             logger.info(f'[Judge] Start judging...')
             logger.info(f'[Judge] File: {file}')
+            # Check if any rule matches
             for rule in config['rules']:
-                try:
-                    if rule["folder"] in file:
+                if rule["folder"] in file:
+                    try:
                         logger.info(f'[Judge] Match folder: {rule["folder"]}')
                         rule_command = f'{rule["app"]} "{file}"'
                         logger.info(f'[Judge] run rule command: {rule_command}')
                         subprocess.run(rule_command)
-                except Exception as e:
-                    logger.error('[Judge] Exception detected during runtime', e)
-                    break
-            else:
-                rule_command = f'{config["fallback"]} "{file}"'
-                logger.info(f'[Judge] run fallback command: {rule_command}')
-                subprocess.run(rule_command)
+                    except Exception as e:
+                        logger.error('[Judge] Exception detected during runtime', e)
+                    finally:
+                        sys.exit(0)
+            # Run if no-one rule matches
+            rule_command = f'{config["fallback"]} "{file}"'
+            logger.info(f'[Judge] run fallback command: {rule_command}')
+            subprocess.run(rule_command)
     except Exception as e:
         logger.error(f'[Judge] Exception detected during judge', e)
