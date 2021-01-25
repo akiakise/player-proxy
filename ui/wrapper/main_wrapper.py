@@ -7,6 +7,7 @@ from config import load_config, write_config
 from ui.source.main import Ui_Dialog
 from ui.wrapper.dialog_rule_add_wrapper import DialogRuleAddWrapper
 from ui.wrapper.dialog_rule_edit_wrapper import DialogRuleEditWrapper
+from util.file_util import get_short_name
 
 
 class MainWrapper(QDialog, Ui_Dialog):
@@ -31,7 +32,7 @@ class MainWrapper(QDialog, Ui_Dialog):
             folder_item.setEditable(False)
             folder_item.setToolTip(rule.folder)
 
-            app_item = QStandardItem(rule.app)
+            app_item = QStandardItem(get_short_name(rule.app))
             app_item.setEditable(False)
             app_item.setToolTip(rule.app)
 

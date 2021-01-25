@@ -12,6 +12,10 @@ def get_windows_path(path):
     return str(PureWindowsPath(path))
 
 
+def get_short_name(path):
+    return path.split('\\')[-1].split('.')[0]
+
+
 def is_folder(path):
     return os.path.isdir(path)
 
