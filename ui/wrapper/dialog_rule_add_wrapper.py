@@ -1,7 +1,7 @@
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 
-from config import load_config, write_config
+from config import load_config, write_config, Rule
 from ui.source.dialog_rule import Ui_Dialog
 from util.file_util import get_windows_path, is_folder, is_application
 
@@ -59,10 +59,7 @@ class DialogRuleAddWrapper(QDialog, Ui_Dialog):
             QMessageBox.critical(self, self.title, 'Please choose a application!')
             return
         config = load_config()
-        config.get('rules').append({
-            'folder': self.folder,
-            'app': self.app
-        })
+        config.rules.append(Rule(self.folder, self.app))
         write_config(config)
         self.slot_button_close_clicked()
 

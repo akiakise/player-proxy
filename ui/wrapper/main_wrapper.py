@@ -24,16 +24,16 @@ class MainWrapper(QDialog, Ui_Dialog):
 
     def draw_ui(self):
         self.config = load_config()
-        model = QStandardItemModel(len(self.config['rules']), 2)
+        model = QStandardItemModel(len(self.config.rules), 2)
         model.setHorizontalHeaderLabels(['Folder', 'Application'])
-        for row, rule in enumerate(self.config['rules']):
-            folder_item = QStandardItem(rule['folder'])
+        for row, rule in enumerate(self.config.rules):
+            folder_item = QStandardItem(rule.folder)
             folder_item.setEditable(False)
-            folder_item.setToolTip(rule['folder'])
+            folder_item.setToolTip(rule.folder)
 
-            app_item = QStandardItem(rule['app'])
+            app_item = QStandardItem(rule.app)
             app_item.setEditable(False)
-            app_item.setToolTip(rule['app'])
+            app_item.setToolTip(rule.app)
 
             model.setItem(row, self.column_folder, folder_item)
             model.setItem(row, self.column_app, app_item)
@@ -53,28 +53,6 @@ class MainWrapper(QDialog, Ui_Dialog):
         self.tableView.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tableView.customContextMenuRequested.connect(self.slot_tableView_customContextMenuRequested)
 
-    """
-    @pyqtSlot()
-    def slot_tableView_doubleClicked(self):
-        self.slot_table_menu_view_action_triggered()
-        if self.tableView.currentIndex().column() == self.column_app:
-            rule_tmp = self.config_map[self.tableView.currentIndex().row()]
-            app = QFileDialog.getOpenFileName(self, f'Choose an app to open the videos under {rule_tmp["folder"]}')[0]
-            if not app:
-                return
-            res = QMessageBox.question(self, 'Confirm',
-                                       f'Are you sure for using \n'
-                                       f'[{app}]\n'
-                                       f'to open videos under\n'
-                                       f'[{rule_tmp["folder"]}]?')
-            if res == QMessageBox.Yes:
-                for rule_config in self.config['rules']:
-                    if rule_config['folder'] == rule_tmp['folder']:
-                        rule_config['app'] = str(PureWindowsPath(app))
-                write_config(self.config)
-                QMessageBox.information(self, 'Notify', f'Successfully update the app connect to {rule_tmp["folder"]}')
-        """
-
     def slot_tableView_customContextMenuRequested(self):
         menu_top = QMenu(self)
         menu_main = menu_top.addMenu('Menu')
@@ -92,7 +70,7 @@ class MainWrapper(QDialog, Ui_Dialog):
     @pyqtSlot()
     def slot_tableView_doubleClicked(self):
         rule = self.current_rule()
-        self.dialog = DialogRuleEditWrapper(rule['folder'], rule['app'])
+        self.dialog = DialogRuleEditWrapper(rule.folder, rule.app)
         self.dialog.closed.connect(self.slot_dialog_closed)
         self.dialog.show()
 
@@ -112,7 +90,7 @@ class MainWrapper(QDialog, Ui_Dialog):
 
     @pyqtSlot()
     def slot_table_menu_del_action_triggered(self):
-        self.config.get('rules').remove(self.current_rule())
+        self.config.rules.remove(self.current_rule())
         write_config(self.config)
         self.draw_ui()
         QMessageBox.information(self, 'Rule Delete', 'Successfully delete a rule!')

@@ -42,9 +42,9 @@ class DialogRuleEditWrapper(QDialog, Ui_Dialog):
     @pyqtSlot()
     def slot_button_confirm_clicked(self):
         config = load_config()
-        for rule_config in config['rules']:
-            if rule_config['folder'] == self.folder:
-                rule_config['app'] = get_windows_path(self.app)
+        for rule_config in config.rules:
+            if rule_config.folder == self.folder:
+                rule_config.app = get_windows_path(self.app)
         write_config(config)
         self.slot_button_close_clicked()
 

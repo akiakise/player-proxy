@@ -1,5 +1,6 @@
 import json
 import os
+from typing import List
 
 DEFAULT_ENCODING = 'utf-8'
 PROJECT_NAME = 'fae'
@@ -17,12 +18,44 @@ DATE_FORMAT = '%Y-%m-%d'
 DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
+class Rule:
+    def __init__(self, folder, app):
+        self.folder = folder
+        self.app = app
+
+    def to_dict(self):
+        return {
+            'folder': self.folder,
+            'app': self.app
+        }
+
+    @staticmethod
+    def parse(d: dict):
+        return Rule(d.get('folder'), d.get('app'))
+
+
+class Config:
+    def __init__(self, rules: List[Rule], fallback):
+        self.rules = rules  # type: List[Rule]
+        self.fallback = fallback  # type: str
+
+    def to_dict(self):
+        return {
+            'rules': [rule.to_dict() for rule in self.rules],
+            'fallback': self.fallback
+        }
+
+    @staticmethod
+    def parse(d: dict):
+        return Config([Rule.parse(rule) for rule in d.get('rules')], d.get('fallback'))
+
+
 def load_config():
     if os.path.exists(FILENAME_CONFIG):
         with open(FILENAME_CONFIG, mode='r', encoding=DEFAULT_ENCODING) as f:
-            return json.load(f)
+            return Config.parse(json.load(f))
 
 
-def write_config(config):
+def write_config(config: Config):
     with open(FILENAME_CONFIG, mode='w', encoding=DEFAULT_ENCODING) as f:
-        f.write(json.dumps(config, default=lambda o: o.__dict__, indent=2))
+        f.write(json.dumps(config.to_dict(), default=lambda o: o.__dict__, indent=2))
