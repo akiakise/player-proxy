@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QDialog, QHeaderView, QMenu, QAbstractItemView, QMes
 
 from config import load_config, write_config
 from ui.source.main import Ui_Dialog
+from ui.wrapper.dialog_new_index_wrapper import DialogNewIndexWrapper
 from ui.wrapper.dialog_rule_add_wrapper import DialogRuleAddWrapper
 from ui.wrapper.dialog_rule_edit_wrapper import DialogRuleEditWrapper
 from util.file_util import get_short_name
@@ -98,7 +99,9 @@ class MainWrapper(QDialog, Ui_Dialog):
 
     @pyqtSlot()
     def slot_table_menu_index_action_triggered(self):
-        pass
+        self.dialog_new_index = DialogNewIndexWrapper(self.tableView.currentIndex().row())
+        self.dialog_new_index.closed.connect(self.slot_dialog_closed)
+        self.dialog_new_index.show()
 
     def current_rule(self):
         return self.config_map[self.tableView.currentIndex().row()]

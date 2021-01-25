@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QDir
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from config import load_config, write_config, Rule
@@ -44,7 +44,7 @@ class DialogRuleAddWrapper(QDialog, Ui_Dialog):
 
     @pyqtSlot()
     def slot_label_app_clicked(self):
-        app = QFileDialog.getOpenFileName()[0]
+        app = QFileDialog.getOpenFileName(filter='exe(*.exe)')[0]
         if not app:
             return
         self.app = get_windows_path(app)
