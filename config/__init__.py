@@ -25,4 +25,4 @@ def load_config():
 
 def write_config(config):
     with open(FILENAME_CONFIG, mode='w', encoding=DEFAULT_ENCODING) as f:
-        f.write(json.dumps(config, default=lambda o: o.__dict__, sort_keys=True, indent=2))
+        f.write(json.dumps(config, default=lambda o: o.__dict__, indent=2))

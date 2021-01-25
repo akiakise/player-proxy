@@ -1,3 +1,6 @@
+"""
+Build: pyinstaller.exe --onedir --noconsole --noconfirm --add-data "fae.json;." configure.py
+"""
 import sys
 import traceback
 
