@@ -19,19 +19,21 @@ DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
 class Rule:
-    def __init__(self, folder, app):
+    def __init__(self, index, folder, app):
+        self.index = index
         self.folder = folder
         self.app = app
 
     def to_dict(self):
         return {
+            'index': self.index,
             'folder': self.folder,
             'app': self.app
         }
 
     @staticmethod
     def parse(d: dict):
-        return Rule(d.get('folder'), d.get('app'))
+        return Rule(d.get('index'), d.get('folder'), d.get('app'))
 
 
 class Config:
@@ -53,7 +55,9 @@ class Config:
 def load_config():
     if os.path.exists(FILENAME_CONFIG):
         with open(FILENAME_CONFIG, mode='r', encoding=DEFAULT_ENCODING) as f:
-            return Config.parse(json.load(f))
+            config = Config.parse(json.load(f))
+            config.rules.sort(key=lambda c: c.index, reverse=False)
+            return config
 
 
 def write_config(config: Config):

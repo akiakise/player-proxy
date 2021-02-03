@@ -9,10 +9,11 @@ from util.file_util import get_windows_path
 class DialogRuleEditWrapper(QDialog, Ui_Dialog):
     closed = pyqtSignal()
 
-    def __init__(self, folder, app):
+    def __init__(self, index, folder, app):
         super().__init__()
         self.setupUi(self)
 
+        self.index = index
         self.folder = folder
         self.app = app
 
@@ -22,14 +23,24 @@ class DialogRuleEditWrapper(QDialog, Ui_Dialog):
     def draw_ui(self):
         self.label_folder_value.setText(self.folder)
         self.label_folder_value.setToolTip(self.folder)
+        self.label_folder_value.setStyleSheet('QLabel{color:blue;padding-left:5px;}')
         self.label_app_value.setText(self.app)
         self.label_app_value.setToolTip(self.app)
         self.label_app_value.setStyleSheet('QLabel{color:blue;padding-left:5px;}')
 
     def connect(self):
+        self.label_folder_value.clicked.connect(self.slot_label_folder_clicked)
         self.label_app_value.clicked.connect(self.slot_label_app_clicked)
         self.pushButton_confirm.clicked.connect(self.slot_button_confirm_clicked)
         self.pushButton_cancel.clicked.connect(self.slot_button_close_clicked)
+
+    @pyqtSlot()
+    def slot_label_folder_clicked(self):
+        folder = QFileDialog.getExistingDirectory()
+        if not folder:
+            return
+        self.folder = get_windows_path(folder)
+        self.draw_ui()
 
     @pyqtSlot()
     def slot_label_app_clicked(self):
@@ -43,8 +54,9 @@ class DialogRuleEditWrapper(QDialog, Ui_Dialog):
     def slot_button_confirm_clicked(self):
         config = load_config()
         for rule_config in config.rules:
-            if rule_config.folder == self.folder:
-                rule_config.app = get_windows_path(self.app)
+            if rule_config.index == self.index:
+                rule_config.folder = self.folder
+                rule_config.app = self.app
         write_config(config)
         self.slot_button_close_clicked()
 

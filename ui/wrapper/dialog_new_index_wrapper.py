@@ -57,7 +57,7 @@ class DialogNewIndexWrapper(QDialog, Ui_Dialog):
             return
 
         # 4. Change index
-        config.rules[index], config.rules[self.origin_index] = config.rules[self.origin_index], config.rules[index]
+        config.rules[index].index, config.rules[self.origin_index].index = config.rules[self.origin_index].index, config.rules[index].index
         write_config(config)
 
         # 5. Over

@@ -18,6 +18,7 @@ class MainWrapper(QDialog, Ui_Dialog):
 
         self.config = None
         self.config_map = {}
+        self.column_count = 2
         self.column_folder = 0
         self.column_app = 1
 
@@ -26,7 +27,7 @@ class MainWrapper(QDialog, Ui_Dialog):
 
     def draw_ui(self):
         self.config = load_config()
-        model = QStandardItemModel(len(self.config.rules), 2)
+        model = QStandardItemModel(len(self.config.rules), self.column_count)
         model.setHorizontalHeaderLabels(['Folder', 'Application'])
         for row, rule in enumerate(self.config.rules):
             folder_item = QStandardItem(rule.folder)
@@ -72,7 +73,7 @@ class MainWrapper(QDialog, Ui_Dialog):
     @pyqtSlot()
     def slot_tableView_doubleClicked(self):
         rule = self.current_rule()
-        self.dialog = DialogRuleEditWrapper(rule.folder, rule.app)
+        self.dialog = DialogRuleEditWrapper(rule.index, rule.folder, rule.app)
         self.dialog.closed.connect(self.slot_dialog_closed)
         self.dialog.show()
 
