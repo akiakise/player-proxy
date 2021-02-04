@@ -37,19 +37,22 @@ class Rule:
 
 
 class Config:
-    def __init__(self, rules: List[Rule], fallback):
+    def __init__(self, rules: List[Rule], fallback: str, aliases: dict):
         self.rules = rules  # type: List[Rule]
         self.fallback = fallback  # type: str
+        self.aliases = aliases  # type: dict
 
     def to_dict(self):
         return {
             'rules': [rule.to_dict() for rule in self.rules],
-            'fallback': self.fallback
+            'fallback': self.fallback,
+            'aliases': self.aliases
         }
 
     @staticmethod
     def parse(d: dict):
-        return Config([Rule.parse(rule) for rule in d.get('rules')], d.get('fallback'))
+        return Config(
+            [Rule.parse(rule) for rule in d.get('rules')], d.get('fallback'), d.get('aliases'))
 
 
 def load_config():
