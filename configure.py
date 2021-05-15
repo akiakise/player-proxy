@@ -1,10 +1,11 @@
 """
-Build: pyinstaller.exe --onedir --noconsole --noconfirm --add-data "fae.json;." configure.py
+Build: pyinstaller.exe --onedir --noconsole --noconfirm configure.py
 """
 import sys
 import traceback
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from log import logger
@@ -21,6 +22,10 @@ if __name__ == '__main__':
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 
     app = QApplication(sys.argv)
+    font = QFont()
+    font.setFamily("Microsoft YaHei UI")
+    font.setHintingPreference(QFont.PreferNoHinting)
+    app.setFont(font)
 
     main_wrapper = MainWrapper()
     main_wrapper.show()

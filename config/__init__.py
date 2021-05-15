@@ -4,16 +4,15 @@ from typing import List
 
 DEFAULT_ENCODING = 'utf-8'
 PROJECT_NAME = 'fae'
-DIR_PROJECT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-DIR_LOG = os.path.join(DIR_PROJECT, 'log')
-FILENAME_CONFIG = os.path.join(DIR_PROJECT, f'{PROJECT_NAME}.json')
-FILENAME_SAMPLE_CONFIG = os.path.join(DIR_PROJECT, f'{PROJECT_NAME}.sample.json')
-KEY_CONFIG = 'config'
+APPDATA = 'APPDATA'
+
+PATH_APPDATA = os.path.abspath(os.getenv(APPDATA))
+PATH_PROJECT = os.path.join(PATH_APPDATA, PROJECT_NAME)
+PATH_LOG_DIR = os.path.join(PATH_PROJECT, 'log')
+PATH_CONFIG = os.path.join(PATH_PROJECT, f'{PROJECT_NAME}.json')
 
 MB = 1024 * 1024
 MINUTE = 60 * 1000
-LOGFILE_COUNT = 5
-
 DATE_FORMAT = '%Y-%m-%d'
 DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
@@ -30,6 +29,9 @@ class Rule:
             'folder': self.folder,
             'app': self.app
         }
+
+    def __repr__(self):
+        return f'Rule[folder={self.folder}, app={self.app}]'
 
     @staticmethod
     def parse(d: dict):
@@ -49,6 +51,9 @@ class Config:
             'aliases': self.aliases
         }
 
+    def __repr__(self):
+        return f'Config[rules={self.rules}, fallback={self.fallback}, aliases={self.aliases}]'
+
     @staticmethod
     def parse(d: dict):
         return Config(
@@ -56,13 +61,18 @@ class Config:
 
 
 def load_config():
-    if os.path.exists(FILENAME_CONFIG):
-        with open(FILENAME_CONFIG, mode='r', encoding=DEFAULT_ENCODING) as f:
+    if os.path.exists(PATH_CONFIG):
+        with open(PATH_CONFIG, mode='r', encoding=DEFAULT_ENCODING) as f:
             config = Config.parse(json.load(f))
             config.rules.sort(key=lambda c: c.index, reverse=False)
             return config
+    else:
+        # generate default config
+        config = Config([], '', {})
+        write_config(config)
+        return config
 
 
 def write_config(config: Config):
-    with open(FILENAME_CONFIG, mode='w', encoding=DEFAULT_ENCODING) as f:
+    with open(PATH_CONFIG, mode='w', encoding=DEFAULT_ENCODING) as f:
         f.write(json.dumps(config.to_dict(), default=lambda o: o.__dict__, indent=2))

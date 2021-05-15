@@ -3,19 +3,22 @@ from logging import Formatter, StreamHandler, getLogger, DEBUG
 from logging.handlers import RotatingFileHandler
 from sys import stdout
 
-from config import MB, LOGFILE_COUNT, PROJECT_NAME, DIR_LOG, DEFAULT_ENCODING
+from config import MB, PROJECT_NAME, PATH_LOG_DIR, DEFAULT_ENCODING
 
-log_file = os.path.join(DIR_LOG, f'{PROJECT_NAME.lower()}.log')
-if not os.path.exists(DIR_LOG):
-    os.makedirs(DIR_LOG)
+__log_file = os.path.join(PATH_LOG_DIR, f'{PROJECT_NAME.lower()}.log')
+if not os.path.exists(PATH_LOG_DIR):
+    os.makedirs(PATH_LOG_DIR)
 
-file_handler = RotatingFileHandler(log_file, maxBytes=10 * MB, backupCount=LOGFILE_COUNT, encoding=DEFAULT_ENCODING)
-fmt = '%(asctime)s - %(threadName)s(%(thread)d) - %(filename)s:%(lineno)s - %(levelname)s - %(message)s'
-formatter = Formatter(fmt)
-file_handler.setFormatter(formatter)
-console_handler = StreamHandler(stdout)
+# File logger
+__file_handler = RotatingFileHandler(__log_file, maxBytes=10 * MB, backupCount=5, encoding=DEFAULT_ENCODING)
+__fmt = '%(asctime)s - %(threadName)s(%(thread)d) - %(filename)s:%(lineno)s - %(levelname)s - %(message)s'
+__formatter = Formatter(__fmt)
+__file_handler.setFormatter(__formatter)
+# Console logger
+__console_handler = StreamHandler(stdout)
 
+# Final logger
 logger = getLogger(f'{PROJECT_NAME}Logger')
-logger.addHandler(file_handler)
-logger.addHandler(console_handler)
+logger.addHandler(__file_handler)
+logger.addHandler(__console_handler)
 logger.setLevel(DEBUG)

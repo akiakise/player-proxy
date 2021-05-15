@@ -59,10 +59,7 @@ class DialogRuleAddWrapper(QDialog, Ui_Dialog):
             QMessageBox.critical(self, self.title, 'Please choose a application!')
             return
         config = load_config()
-        max_index = -1
-        for rule in config.rules:
-            if rule.index > max_index:
-                max_index = rule.index
+        max_index = max([rule.index for rule in config.rules] + [-1])
         config.rules.append(Rule(max_index + 1, self.folder, self.app))
         write_config(config)
         self.slot_button_close_clicked()
