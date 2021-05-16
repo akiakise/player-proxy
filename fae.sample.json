@@ -1,13 +1,19 @@
 {
-  "fallback": "default fallback",
   "rules": [
     {
+      "index": 1,
       "app": "app 1",
       "folder": "folder 1"
     },
     {
+      "index": 2,
       "app": "app 2",
       "folder": "folder 2"
     }
-  ]
+  ],
+  "fallback": "fallback",
+  "aliases": {
+    "potplayer": "path to potplayer.exe",
+    "mpc-be": "patch to mpc-be.exe"
+  }
 }

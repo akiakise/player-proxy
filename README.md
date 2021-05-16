@@ -2,54 +2,63 @@
 
 File Association Enhancement.
 
-I have two video player, `MPC-BE` for anime, `PotPlayer` for most of the others. However, I can only specify one default
-app for video files, such as `.mkv`, `.mp4`
-and so on.
+I have three video players, `MPC-BE` for anime, `PotPlayer` and `mpv` for the others. 
+However, in Windows, for specify video type such as `.mkv`, you can only associate it with **one** application.
 
-So I consider enhancing the file association, using a simple python script to associate with video files, and detect
-which app should be used to open the file.
+FAE is working for this situation.
 
-That is FAE. Now it is just checking whether the path of file contains `param`. It is enough to me, now.
+FAE will check the rules configured before opening a file.
+The rule is something like `using this application to open videos under that folder`.
 
 ## Usage
 
+FAE is under developing, so there isn't a release version, you need to build from source.
+
 ### 1. Create your own configuration file.
 
-Make a copy of [fae.sample.json](fae.sample.json), named `fae.json`, change the config items:
+Make a copy of [fae.sample.json](fae.sample.json), rename to `fae.json`, change the config items:
 
 ```json
 {
-  "fallback": "default fallback",
   "rules": [
     {
+      "index": 1,
       "app": "app 1",
       "folder": "folder 1"
     },
     {
+      "index": 2,
       "app": "app 2",
       "folder": "folder 2"
     }
-  ]
+  ],
+  "fallback": "fallback",
+  "aliases": {
+    "potplayer": "path to potplayer.exe",
+    "mpc-be": "patch to mpc-be.exe"
+  }
 }
 ```
 
-How does the config items work? See the pseudo-code:
-
-```py
-if param in file_path:
-    subprocess.run(app, file_path)
-else:
-    subprocess.run(fallback, file_path)
-```
-
-### 2. Build a executable file
+### 2. Build an executable file
 
 ```shell
-pip3 install pyinstaller
-pyinstaller.exe --onedir --noconsole --noconfirm --add-data "fae.json;." judge.py
+pip3 install -r requirements.txt
+pyinstaller.exe --onedir --noconsole --noconfirm configure.py
+pyinstaller.exe --onedir --noconsole --noconfirm judge.py
 ```
 
-### 3. Change your default app
+### 3. Configure
+
+Execute configure.exe:
+
+![configure](resources/configure.png)
+
+### 4. Configuration file
+
+Move the new configuration file in step 1 into `%APPDATA%/fae`.
+
+### 4. Open video files with judge.exe
 
 ![default app](resources/default_app.png)
 

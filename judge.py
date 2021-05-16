@@ -1,5 +1,5 @@
 """
-Build: pyinstaller.exe --onedir --noconsole --noconfirm --add-data "fae.json;." judge.py
+Build: pyinstaller.exe --onedir --noconsole --noconfirm judge.py
 """
 import os
 import subprocess
