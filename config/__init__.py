@@ -6,8 +6,7 @@ DEFAULT_ENCODING = 'utf-8'
 PROJECT_NAME = 'fae'
 APPDATA = 'APPDATA'
 
-PATH_APPDATA = os.path.abspath(os.getenv(APPDATA))
-PATH_PROJECT = os.path.join(PATH_APPDATA, PROJECT_NAME)
+PATH_PROJECT = os.path.abspath(os.getcwd())
 PATH_LOG_DIR = os.path.join(PATH_PROJECT, 'log')
 PATH_CONFIG = os.path.join(PATH_PROJECT, f'{PROJECT_NAME}.json')
 

@@ -44,7 +44,7 @@ Make a copy of [fae.sample.json](fae.sample.json), rename to `fae.json`, change 
 
 ```shell
 pip3 install -r requirements.txt
-pyinstaller.exe --onedir --noconsole --noconfirm configure.py
+pyinstaller.exe --onedir --noconsole --noconfirm fae.py
 pyinstaller.exe --onedir --noconsole --noconfirm judge.py
 ```
 
