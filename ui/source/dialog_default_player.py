@@ -39,7 +39,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Update default player"))
         self.label.setText(_translate("Dialog", "Application:"))
         self.label_default_player.setText(_translate("Dialog", "TextLabel"))
         self.button_confirm.setText(_translate("Dialog", "Confirm"))

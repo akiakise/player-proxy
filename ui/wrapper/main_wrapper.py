@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QHeaderView, QMenu, QAbstractItemView, QMessageBox, 
 from config import load_config, write_config, Rule
 from ui.source.main import Ui_MainWindow
 from ui.wrapper.dialog_default_player_wrapper import DialogDefaultPlayerWrapper
+from ui.wrapper.dialog_known_player_wrapper import DialogKnownPlayerWrapper
 from ui.wrapper.dialog_new_index_wrapper import DialogNewIndexWrapper
 from ui.wrapper.dialog_rule_add_wrapper import DialogRuleAddWrapper
 from ui.wrapper.dialog_rule_edit_wrapper import DialogRuleEditWrapper
@@ -78,12 +79,17 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         action_rule_add.triggered.connect(self.slot_action_rule_add_triggered)
         toolbar.addAction(action_rule_add)
         # Action 2: Set fallback player
-        action_default_player = QAction('Default', self)
+        action_default_player = QAction('Default player', self)
         action_default_player.setStatusTip('Update default player')
         action_default_player.setToolTip('Update default player')
         action_default_player.triggered.connect(self.slot_action_default_player_triggered)
         toolbar.addAction(action_default_player)
         # Action 3: Manage known players
+        action_known_player = QAction('Known player', self)
+        action_known_player.setStatusTip('Manage known player')
+        action_known_player.setToolTip('Manage known player')
+        action_known_player.triggered.connect(self.slot_action_known_player_triggered)
+        toolbar.addAction(action_known_player)
 
     @pyqtSlot()
     def slot_action_rule_add_triggered(self):
@@ -92,6 +98,11 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
     @pyqtSlot()
     def slot_action_default_player_triggered(self):
         self.dialog = DialogDefaultPlayerWrapper()
+        self.dialog.show()
+
+    @pyqtSlot()
+    def slot_action_known_player_triggered(self):
+        self.dialog = DialogKnownPlayerWrapper()
         self.dialog.show()
 
     def connect(self):
@@ -147,8 +158,8 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         rule = self.__current_rule()
         self.config.rules.remove(rule)
         write_config(self.config)
-        self.draw_ui()
         QMessageBox.information(self, 'Rule Delete', f'Rule [{rule}] deleted!')
+        self.draw_ui()
 
     @pyqtSlot()
     def slot_table_menu_index_action_triggered(self):
