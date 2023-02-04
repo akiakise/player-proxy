@@ -2,6 +2,8 @@ import json
 import os
 from typing import List, AnyStr, Dict
 
+from PyQt5.QtWidgets import QMessageBox
+
 DEFAULT_ENCODING = 'utf-8'
 PROJECT_NAME = 'fae'
 APPDATA = 'APPDATA'
@@ -66,9 +68,12 @@ class Config:
 def load_config():
     if os.path.exists(PATH_CONFIG):
         with open(PATH_CONFIG, mode='r', encoding=DEFAULT_ENCODING) as f:
-            config = Config.parse(json.load(f))
-            config.rules.sort(key=lambda c: c.index, reverse=False)
-            return config
+            try:
+                config = Config.parse(json.load(f))
+                config.rules.sort(key=lambda c: c.index, reverse=False)
+                return config
+            except Exception as e:
+                QMessageBox.critical(None, 'System error', f'Parse config failed: {str(e)}')
     else:
         # generate default config
         config = Config([], '', [])
@@ -77,5 +82,6 @@ def load_config():
 
 
 def write_config(config: Config):
+    config.apps = list(set(config.apps))
     with open(PATH_CONFIG, mode='w', encoding=DEFAULT_ENCODING) as f:
         f.write(json.dumps(config.to_dict(), default=lambda o: o.__dict__, indent=2))

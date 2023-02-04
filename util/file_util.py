@@ -17,8 +17,8 @@ def get_short_name(path):
 
 
 def is_folder(path):
-    return os.path.isdir(path)
+    return path and os.path.isdir(path)
 
 
 def is_application(path: str):
-    return os.path.isfile(path) and path.endswith('.exe') and os.access(path, os.X_OK)
+    return path and os.path.isfile(path) and path.endswith('.exe') and os.access(path, os.X_OK)
