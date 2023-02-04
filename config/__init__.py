@@ -1,6 +1,6 @@
 import json
 import os
-from typing import List
+from typing import List, AnyStr, Dict
 
 DEFAULT_ENCODING = 'utf-8'
 PROJECT_NAME = 'fae'
@@ -38,25 +38,29 @@ class Rule:
 
 
 class Config:
-    def __init__(self, rules: List[Rule], fallback: str, aliases: dict):
+    def __init__(self, rules: List[Rule], fallback: AnyStr, apps: List[AnyStr] = None):
         self.rules = rules  # type: List[Rule]
-        self.fallback = fallback  # type: str
-        self.aliases = aliases  # type: dict
+        if apps is None:
+            self.apps = []  # type: List[AnyStr]
+        else:
+            self.apps = apps  # type: List[AnyStr]
+        self.fallback = fallback  # type: AnyStr
 
     def to_dict(self):
         return {
             'rules': [rule.to_dict() for rule in self.rules],
+            'apps': self.apps,
             'fallback': self.fallback,
-            'aliases': self.aliases
         }
 
     def __repr__(self):
-        return f'Config[rules={self.rules}, fallback={self.fallback}, aliases={self.aliases}]'
+        return f'Config[rules={self.rules}, apps={self.apps}, fallback={self.fallback}]'
 
     @staticmethod
     def parse(d: dict):
-        return Config(
-            [Rule.parse(rule) for rule in d.get('rules')], d.get('fallback'), d.get('aliases'))
+        return Config([Rule.parse(rule) for rule in d.get('rules')],
+                      d.get('fallback'),
+                      d.get('apps'))
 
 
 def load_config():
@@ -67,7 +71,7 @@ def load_config():
             return config
     else:
         # generate default config
-        config = Config([], '', {})
+        config = Config([], '', [])
         write_config(config)
         return config
 

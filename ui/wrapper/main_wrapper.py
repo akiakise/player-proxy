@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QHeaderView, QMenu, QAbstractItemView, QMessageBox, 
 from config import load_config, write_config, Rule
 from ui.source.main import Ui_MainWindow
 from ui.wrapper.dialog_new_index_wrapper import DialogNewIndexWrapper
-from ui.wrapper.dialog_option_wrapper import DialogOptionWrapper
 from ui.wrapper.dialog_rule_add_wrapper import DialogRuleAddWrapper
 from ui.wrapper.dialog_rule_edit_wrapper import DialogRuleEditWrapper
 from util.file_util import get_short_name
@@ -71,21 +70,10 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         action_rule_add.setToolTip('Add Rule')
         action_rule_add.triggered.connect(self.slot_action_rule_add_triggered)
         toolbar.addAction(action_rule_add)
-        action_option = QAction('Options', self)
-        action_option.setStatusTip('Configure Options')
-        action_option.setToolTip('Configure Options')
-        action_option.triggered.connect(self.slot_action_option_triggered)
-        toolbar.addAction(action_option)
 
     @pyqtSlot()
     def slot_action_rule_add_triggered(self):
         self.slot_table_menu_add_action_triggered()
-
-    @pyqtSlot()
-    def slot_action_option_triggered(self):
-        self.option_dialog = DialogOptionWrapper()
-        self.option_dialog.closed.connect(self.slot_dialog_closed)
-        self.option_dialog.show()
 
     def connect(self):
         self.tableView.doubleClicked.connect(self.slot_tableView_doubleClicked)

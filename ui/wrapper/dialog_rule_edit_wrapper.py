@@ -14,8 +14,8 @@ class DialogRuleEditWrapper(QDialog, Ui_Dialog):
         self.setupUi(self)
 
         self.index = index
-        self.folder = folder
-        self.app = app
+        self.folder, self.app = folder, app
+        self.chose_folder, self.chose_app = self.folder, self.app
         self.title = 'Rule Edit'
         self.combo_box_item_other = 'Select other application'
 
@@ -23,21 +23,29 @@ class DialogRuleEditWrapper(QDialog, Ui_Dialog):
         self.connect()
 
     def draw_ui(self):
-        self.label_folder_value.setText(self.folder)
-        self.label_folder_value.setToolTip(self.folder)
+        if self.chose_folder:
+            self.label_folder_value.setText(self.chose_folder)
+            self.label_folder_value.setToolTip(self.chose_folder)
+        else:
+            self.label_folder_value.setText(self.folder)
+            self.label_folder_value.setToolTip(self.folder)
         self.label_folder_value.setStyleSheet('QLabel{color:blue;padding-left:5px;}')
         self.combo_box = QComboBox()
         self.combo_box.addItem(self.app)
+        self.combo_box.setCurrentText(self.app)
         config = load_config()
-        for k, v in config.aliases.items():
-            if self.app != v:
-                self.combo_box.addItem(k)
+        for app in config.apps:
+            if self.app != app:
+                self.combo_box.addItem(app)
+        if self.chose_app and self.chose_app != self.app:
+            self.combo_box.addItem(self.chose_app)
+            self.combo_box.setCurrentText(self.chose_app)
         self.combo_box.addItem(self.combo_box_item_other)
+        self.combo_box.activated.connect(self.slot_combo_box_activated)
         self.gridLayout.addWidget(self.combo_box, 1, 1, 1, 1)
 
     def connect(self):
         self.label_folder_value.clicked.connect(self.slot_label_folder_clicked)
-        self.combo_box.activated.connect(self.slot_combo_box_activated)
         self.pushButton_confirm.clicked.connect(self.slot_button_confirm_clicked)
         self.pushButton_cancel.clicked.connect(self.slot_button_close_clicked)
 
@@ -46,46 +54,44 @@ class DialogRuleEditWrapper(QDialog, Ui_Dialog):
         folder = QFileDialog.getExistingDirectory()
         if not folder:
             return
-        self.folder = get_windows_path(folder)
+        self.chose_folder = get_windows_path(folder)
         self.draw_ui()
 
     @pyqtSlot()
     def slot_combo_box_activated(self):
         if self.combo_box_item_other != self.combo_box.currentText():
-            self.app = self.combo_box.currentText()
+            self.chose_app = self.combo_box.currentText()
         else:
             app = QFileDialog.getOpenFileName()[0]
             if not app:
                 return
-            self.app = get_windows_path(app)
+            self.chose_app = get_windows_path(app)
             self.draw_ui()
 
     @pyqtSlot()
     def slot_button_confirm_clicked(self):
-        if not is_folder(self.folder):
+        if not is_folder(self.chose_folder):
             QMessageBox.critical(self, self.title, 'Please choose a folder!')
+            self.chose_folder = self.folder
+            self.draw_ui()
             return
-        config = load_config()
-        is_alias = False
-        real_app = None
-        if not is_application(self.app):
-            for k, v in config.aliases.items():
-                if self.app == k:
-                    is_alias = True
-                    real_app = v
-                    break
-            if not is_alias:
-                QMessageBox.critical(self, self.title, 'Please choose a application!')
-                return
+        if not is_application(self.chose_app):
+            QMessageBox.critical(self, self.title, 'Please choose a valid player!')
+            self.chose_app = self.app
+            self.draw_ui()
+            return
 
+        config = load_config()
+        # 1. handle rule change
         for rule_config in config.rules:
-            if rule_config.index == self.index:
-                rule_config.folder = self.folder
-                if is_alias:
-                    rule_config.app = real_app
-                else:
-                    rule_config.app = self.app
-                break
+            if rule_config.index != self.index:
+                continue
+            rule_config.folder, rule_config.app = self.chose_folder, self.chose_app
+            break
+        # 2. check if apps updated
+        if self.chose_app not in config.apps:
+            config.apps.append(self.chose_app)
+        # 3. update config
         write_config(config)
         self.slot_button_close_clicked()
 

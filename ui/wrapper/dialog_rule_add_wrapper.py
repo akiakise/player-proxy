@@ -61,6 +61,7 @@ class DialogRuleAddWrapper(QDialog, Ui_Dialog):
         config = load_config()
         max_index = max([rule.index for rule in config.rules] + [-1])
         config.rules.append(Rule(max_index + 1, self.folder, self.app))
+        config.apps.append(self.app)
         write_config(config)
         self.slot_button_close_clicked()
 
