@@ -22,9 +22,10 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         self.config = None
         self.config_map = {}
 
-        self.column_count = 2
-        self.column_folder = 0
-        self.column_app = 1
+        self.column_count = 3
+        self.column_index = 0
+        self.column_folder = 1
+        self.column_app = 2
 
         self.draw_ui()
         self.connect()
@@ -36,22 +37,26 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
     def draw_ui_main(self):
         self.config = load_config()
         model = QStandardItemModel(len(self.config.rules), self.column_count)
-        model.setHorizontalHeaderLabels(['Folder', 'Application'])
+        model.setHorizontalHeaderLabels(['Index', 'Folder', 'Application'])
         for row, rule in enumerate(self.config.rules):
+            index_item = QStandardItem(str(rule.index))
+            index_item.setEditable(False)
+            index_item.setToolTip(str(rule.index))
             folder_item = QStandardItem(rule.folder)
             folder_item.setEditable(False)
             folder_item.setToolTip(rule.folder)
-
             app_item = QStandardItem(get_short_name(rule.app))
             app_item.setEditable(False)
             app_item.setToolTip(rule.app)
 
+            model.setItem(row, self.column_index, index_item)
             model.setItem(row, self.column_folder, folder_item)
             model.setItem(row, self.column_app, app_item)
             self.config_map[row] = rule
         self.tableView.setModel(model)
         self.tableView.verticalHeader().hide()
         self.tableView.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
+        self.tableView.horizontalHeader().setSectionResizeMode(self.column_index, QHeaderView.ResizeToContents)
         self.tableView.horizontalHeader().setSectionResizeMode(self.column_folder, QHeaderView.ResizeToContents)
         self.tableView.horizontalHeader().setSectionResizeMode(self.column_app, QHeaderView.Stretch)
         self.tableView.horizontalHeader().setHighlightSections(False)
