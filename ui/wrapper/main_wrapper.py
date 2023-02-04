@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QHeaderView, QMenu, QAbstractItemView, QMessageBox, 
 
 from config import load_config, write_config, Rule
 from ui.source.main import Ui_MainWindow
+from ui.wrapper.dialog_default_player_wrapper import DialogDefaultPlayerWrapper
 from ui.wrapper.dialog_new_index_wrapper import DialogNewIndexWrapper
 from ui.wrapper.dialog_rule_add_wrapper import DialogRuleAddWrapper
 from ui.wrapper.dialog_rule_edit_wrapper import DialogRuleEditWrapper
@@ -65,15 +66,28 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
             return
         toolbar = QToolBar("Toolbar")
         self.toolbar = self.addToolBar(toolbar)
+        # Action 1: Add Rule
         action_rule_add = QAction('Add', self)
         action_rule_add.setStatusTip('Add Rule')
         action_rule_add.setToolTip('Add Rule')
         action_rule_add.triggered.connect(self.slot_action_rule_add_triggered)
         toolbar.addAction(action_rule_add)
+        # Action 2: Set fallback player
+        action_default_player = QAction('Default', self)
+        action_default_player.setStatusTip('Update default player')
+        action_default_player.setToolTip('Update default player')
+        action_default_player.triggered.connect(self.slot_action_default_player_triggered)
+        toolbar.addAction(action_default_player)
+        # Action 3: Manage known players
 
     @pyqtSlot()
     def slot_action_rule_add_triggered(self):
         self.slot_table_menu_add_action_triggered()
+
+    @pyqtSlot()
+    def slot_action_default_player_triggered(self):
+        self.dialog = DialogDefaultPlayerWrapper()
+        self.dialog.show()
 
     def connect(self):
         self.tableView.doubleClicked.connect(self.slot_tableView_doubleClicked)
