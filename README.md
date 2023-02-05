@@ -2,65 +2,26 @@
 
 File Association Enhancement.
 
-I have three video players, `MPC-BE` for anime, `PotPlayer` and `mpv` for the others. 
-However, in Windows, for specify video type such as `.mkv`, you can only associate it with **one** application.
+A python application supports rule-check before opening videos. You can associate different players for different rule.
 
-FAE is working for this situation.
+For example:
 
-FAE will check the rules configured before opening a file.
-The rule is something like `using this application to open videos under that folder`.
+1. rule A -> folder `testA` -> opened by player `MPV`;
+2. rule B -> folder `testB` -> opened by player `MPC-BE`;
+3. rule C -> folder `testC` -> opened by player `PotPlayer`.
 
 ## Usage
 
-FAE is under developing, so there isn't a release version, you need to build from source.
+1. Download the latest application
+   on [https://github.com/akiakise/fae/releases](https://github.com/akiakise/fae/releases)
 
-### 1. Create your own configuration file.
+2. Doubleclick `fae.exe` and add your own rules:
+   ![config](resources/1-config.png)
 
-Make a copy of [fae.sample.json](fae.sample.json), rename to `fae.json`, change the config items:
+3. Always open video files with fae.exe:
+   ![association](resources/2-association.png)
 
-```json
-{
-  "rules": [
-    {
-      "index": 1,
-      "app": "app 1",
-      "folder": "folder 1"
-    },
-    {
-      "index": 2,
-      "app": "app 2",
-      "folder": "folder 2"
-    }
-  ],
-  "fallback": "fallback",
-  "aliases": {
-    "potplayer": "path to potplayer.exe",
-    "mpc-be": "patch to mpc-be.exe"
-  }
-}
-```
-
-### 2. Build an executable file
-
-```shell
-pip3 install -r requirements.txt
-pyinstaller.exe --onedir --noconsole --noconfirm fae.py
-pyinstaller.exe --onedir --noconsole --noconfirm judge.py
-```
-
-### 3. Configure
-
-Execute configure.exe:
-
-![configure](resources/configure.png)
-
-### 4. Configuration file
-
-Move the new configuration file in step 1 into `%APPDATA%/fae`.
-
-### 4. Open video files with judge.exe
-
-![default app](resources/default_app.png)
+4. Doubleclick the file you want to open, then the rule will determine whether player to use.
 
 ## LICENSE
 

@@ -30,7 +30,7 @@ class DialogRuleAddWrapper(QDialog, Ui_Dialog):
         for app in config.apps:
             if app != self.app:
                 self.combo_box.addItem(app)
-        if self.app:
+        if self.app and self.app != self.combo_box_item_other:
             self.combo_box.addItem(self.app)
             self.combo_box.setCurrentText(self.app)
         self.combo_box.addItem(self.combo_box_item_other)

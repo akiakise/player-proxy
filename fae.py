@@ -10,13 +10,14 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
-from config import load_config
-from log import logger
+from config import load_config, get_config_file
+from log import get_logger
 from ui.wrapper.main_wrapper import MainWrapper
 from util import get_extension
 import win32api, win32con
 
 if __name__ == '__main__':
+    logger = get_logger()
     argv_length = len(sys.argv)
     if argv_length == 1:
         # If there is only one argument, start for configure
@@ -53,12 +54,18 @@ if __name__ == '__main__':
         ''')
         file_path = os.path.abspath(sys.argv[1])
         extension = get_extension(file_path)
+        logger.info(f'config file {get_config_file()}')
+        logger.info(f'current file: {__file__}')
+        logger.info(f'executable: {sys.executable}')
         config = load_config()
         # Check if any rule matches
         for rule in config.rules:
             if rule.folder in file_path:
                 try:
-                    subprocess.run(f'{rule.app} "{file_path}"')
+                    logger.info(f'rule matched, rule: {rule}')
+                    command = f'{rule.app} "{file_path}"'
+                    logger.info(f'run command: {command}')
+                    subprocess.run(command)
                     sys.exit(0)
                 except Exception as e:
                     win32api.MessageBoxEx(0, 'Failed to open file, navigate to logs for more details', 'Critical',
@@ -66,7 +73,10 @@ if __name__ == '__main__':
                     logger.error('Failed to open file', e)
                     sys.exit(1)
         # Run if no-one rule matches
-        subprocess.run(f'{config.fallback} "{file_path}"')
+        logger.info(f'no rule matched, use fallback player: {config.fallback}')
+        command = f'{config.fallback} "{file_path}"'
+        logger.info(f'run command: {command}')
+        subprocess.run(command)
         sys.exit(0)
     else:
         # If there is more than two arguments, warn and exit

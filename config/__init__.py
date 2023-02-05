@@ -1,21 +1,28 @@
 import json
 import os
-from typing import List, AnyStr, Dict
+from typing import List, AnyStr
 
 from PyQt5.QtWidgets import QMessageBox
 
 DEFAULT_ENCODING = 'utf-8'
 PROJECT_NAME = 'fae'
-APPDATA = 'APPDATA'
-
-PATH_PROJECT = os.path.abspath(os.getcwd())
-PATH_LOG_DIR = os.path.join(PATH_PROJECT, 'log')
-PATH_CONFIG = os.path.join(PATH_PROJECT, f'{PROJECT_NAME}.json')
-
 MB = 1024 * 1024
 MINUTE = 60 * 1000
 DATE_FORMAT = '%Y-%m-%d'
 DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+
+def get_project_path():
+    os.chdir(os.path.join(os.path.dirname(__file__), '../'))
+    return os.path.abspath(os.getcwd())
+
+
+def get_config_file():
+    return os.path.join(get_project_path(), f'{PROJECT_NAME}.json')
+
+
+def get_log_file():
+    return os.path.join(get_project_path(), f'{PROJECT_NAME}.log')
 
 
 class Rule:
@@ -66,8 +73,8 @@ class Config:
 
 
 def load_config():
-    if os.path.exists(PATH_CONFIG):
-        with open(PATH_CONFIG, mode='r', encoding=DEFAULT_ENCODING) as f:
+    if os.path.exists(get_config_file()):
+        with open(get_config_file(), mode='r', encoding=DEFAULT_ENCODING) as f:
             try:
                 config = Config.parse(json.load(f))
                 config.rules.sort(key=lambda c: c.index, reverse=False)
@@ -83,5 +90,5 @@ def load_config():
 
 def write_config(config: Config):
     config.apps = list(set(config.apps))
-    with open(PATH_CONFIG, mode='w', encoding=DEFAULT_ENCODING) as f:
+    with open(get_config_file(), mode='w', encoding=DEFAULT_ENCODING) as f:
         f.write(json.dumps(config.to_dict(), default=lambda o: o.__dict__, indent=2))
