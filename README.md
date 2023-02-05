@@ -21,7 +21,7 @@ For example:
 3. Always open video files with fae.exe:
    ![association](resources/2-association.png)
 
-4. Doubleclick the file you want to open, then the rule will determine whether player to use.
+4. Doubleclick the file you want to open, then the rule will determine which player to use.
 
 ## LICENSE
 

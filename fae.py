@@ -60,7 +60,7 @@ if __name__ == '__main__':
         config = load_config()
         # Check if any rule matches
         for rule in config.rules:
-            if rule.folder in file_path:
+            if rule.folder.upper() in file_path.upper():
                 try:
                     logger.info(f'rule matched, rule: {rule}')
                     command = f'{rule.app} "{file_path}"'
