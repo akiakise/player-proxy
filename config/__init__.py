@@ -2,6 +2,7 @@ import json
 import os
 from typing import List, AnyStr
 
+from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QMessageBox
 
 DEFAULT_ENCODING = 'utf-8'
@@ -12,16 +13,18 @@ DATE_FORMAT = '%Y-%m-%d'
 DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
-def get_project_path():
-    return os.path.abspath(os.getcwd())
+def get_config_path():
+    path = os.path.join(os.path.abspath(QDir.homePath()), f'.{PROJECT_NAME}')
+    os.makedirs(path, exist_ok=True)
+    return path
 
 
 def get_config_file():
-    return os.path.join(get_project_path(), f'{PROJECT_NAME}.json')
+    return os.path.join(get_config_path(), f'{PROJECT_NAME}.json')
 
 
 def get_log_file():
-    return os.path.join(get_project_path(), f'{PROJECT_NAME}.log')
+    return os.path.join(get_config_path(), f'{PROJECT_NAME}.log')
 
 
 class Rule:
