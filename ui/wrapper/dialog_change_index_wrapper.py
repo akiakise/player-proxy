@@ -5,7 +5,7 @@ from config import load_config, write_config
 from ui.source.dialog_rule import Ui_Dialog
 
 
-class DialogNewIndexWrapper(QDialog, Ui_Dialog):
+class DialogChangeIndexWrapper(QDialog, Ui_Dialog):
     closed = pyqtSignal()
 
     def __init__(self, origin_index):
@@ -57,7 +57,8 @@ class DialogNewIndexWrapper(QDialog, Ui_Dialog):
             return
 
         # 4. Change index
-        config.rules[index].index, config.rules[self.origin_index].index = config.rules[self.origin_index].index, config.rules[index].index
+        config.rules[index].index, config.rules[self.origin_index].index = config.rules[self.origin_index].index, \
+        config.rules[index].index
         write_config(config)
 
         # 5. Over

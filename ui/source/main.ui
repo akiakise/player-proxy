@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>400</width>
-    <height>200</height>
-   </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>400</width>
-    <height>200</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>400</width>
-    <height>200</height>
-   </size>
-  </property>
-  <property name="windowTitle">
-   <string>FAE</string>
-  </property>
-  <widget class="QWidget" name="centralwidget">
-   <property name="font">
-    <font>
-     <family>Microsoft YaHei UI</family>
-    </font>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
-     <number>1</number>
-    </property>
-    <item row="0" column="0">
-     <widget class="QTableView" name="tableView"/>
-    </item>
-   </layout>
-  </widget>
- </widget>
- <resources/>
- <connections/>
+    <class>MainWindow</class>
+    <widget class="QMainWindow" name="MainWindow">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>400</width>
+                <height>200</height>
+            </rect>
+        </property>
+        <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="minimumSize">
+            <size>
+                <width>400</width>
+                <height>200</height>
+            </size>
+        </property>
+        <property name="maximumSize">
+            <size>
+                <width>400</width>
+                <height>200</height>
+            </size>
+        </property>
+        <property name="windowTitle">
+            <string>Player Proxy</string>
+        </property>
+        <widget class="QWidget" name="centralwidget">
+            <property name="font">
+                <font>
+                    <family>Microsoft YaHei UI</family>
+                </font>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+                <property name="leftMargin">
+                    <number>0</number>
+                </property>
+                <property name="topMargin">
+                    <number>0</number>
+                </property>
+                <property name="rightMargin">
+                    <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                    <number>1</number>
+                </property>
+                <item row="0" column="0">
+                    <widget class="QTableView" name="tableView"/>
+                </item>
+            </layout>
+        </widget>
+    </widget>
+    <resources/>
+    <connections/>
 </ui>

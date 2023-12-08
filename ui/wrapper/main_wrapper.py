@@ -7,7 +7,7 @@ from config import load_config, write_config, Rule
 from ui.source.main import Ui_MainWindow
 from ui.wrapper.dialog_default_player_wrapper import DialogDefaultPlayerWrapper
 from ui.wrapper.dialog_known_player_wrapper import DialogKnownPlayerWrapper
-from ui.wrapper.dialog_new_index_wrapper import DialogNewIndexWrapper
+from ui.wrapper.dialog_change_index_wrapper import DialogChangeIndexWrapper
 from ui.wrapper.dialog_rule_add_wrapper import DialogRuleAddWrapper
 from ui.wrapper.dialog_rule_edit_wrapper import DialogRuleEditWrapper
 from util.file_util import get_short_name
@@ -23,10 +23,11 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         self.config = None
         self.config_map = {}
 
+        # index, folder, application
         self.column_count = 3
-        self.column_index = 0
-        self.column_folder = 1
-        self.column_app = 2
+        self.column_index_index = 0
+        self.column_index_folder = 1
+        self.column_index_app = 2
 
         self.draw_ui()
         self.connect()
@@ -50,16 +51,16 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
             app_item.setEditable(False)
             app_item.setToolTip(rule.app)
 
-            model.setItem(row, self.column_index, index_item)
-            model.setItem(row, self.column_folder, folder_item)
-            model.setItem(row, self.column_app, app_item)
+            model.setItem(row, self.column_index_index, index_item)
+            model.setItem(row, self.column_index_folder, folder_item)
+            model.setItem(row, self.column_index_app, app_item)
             self.config_map[row] = rule
         self.tableView.setModel(model)
         self.tableView.verticalHeader().hide()
         self.tableView.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
-        self.tableView.horizontalHeader().setSectionResizeMode(self.column_index, QHeaderView.ResizeToContents)
-        self.tableView.horizontalHeader().setSectionResizeMode(self.column_folder, QHeaderView.ResizeToContents)
-        self.tableView.horizontalHeader().setSectionResizeMode(self.column_app, QHeaderView.Stretch)
+        self.tableView.horizontalHeader().setSectionResizeMode(self.column_index_index, QHeaderView.ResizeToContents)
+        self.tableView.horizontalHeader().setSectionResizeMode(self.column_index_folder, QHeaderView.ResizeToContents)
+        self.tableView.horizontalHeader().setSectionResizeMode(self.column_index_app, QHeaderView.Stretch)
         self.tableView.horizontalHeader().setHighlightSections(False)
         self.tableView.horizontalHeader().setSectionsClickable(False)
         self.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -110,6 +111,18 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         self.tableView.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tableView.customContextMenuRequested.connect(self.slot_tableView_customContextMenuRequested)
 
+    @pyqtSlot()
+    def slot_tableView_doubleClicked(self):
+        rule = self.__current_rule()
+        self.dialog = DialogRuleEditWrapper(rule.index, rule.folder, rule.app)
+        self.dialog.closed.connect(self.slot_dialog_closed)
+        self.dialog.show()
+
+    @pyqtSlot()
+    def slot_dialog_closed(self):
+        self.draw_ui()
+
+    @pyqtSlot()
     def slot_tableView_customContextMenuRequested(self):
         menu_top = QMenu(self)
         menu_main = menu_top.addMenu('Menu')
@@ -123,17 +136,6 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         menu_index_action = menu_main.addAction('Change Index')
         menu_index_action.triggered.connect(self.slot_table_menu_index_action_triggered)
         menu_main.exec_(QtGui.QCursor.pos())
-
-    @pyqtSlot()
-    def slot_tableView_doubleClicked(self):
-        rule = self.__current_rule()
-        self.dialog = DialogRuleEditWrapper(rule.index, rule.folder, rule.app)
-        self.dialog.closed.connect(self.slot_dialog_closed)
-        self.dialog.show()
-
-    @pyqtSlot()
-    def slot_dialog_closed(self):
-        self.draw_ui()
 
     @pyqtSlot()
     def slot_table_menu_add_action_triggered(self):
@@ -167,9 +169,9 @@ class MainWrapper(QMainWindow, Ui_MainWindow):
         if self.__is_rule_invalid():
             QMessageBox.critical(self, title, 'No rules now!')
             return
-        self.dialog_new_index = DialogNewIndexWrapper(self.tableView.currentIndex().row())
-        self.dialog_new_index.closed.connect(self.slot_dialog_closed)
-        self.dialog_new_index.show()
+        self.dialog_change_index = DialogChangeIndexWrapper(self.tableView.currentIndex().row())
+        self.dialog_change_index.closed.connect(self.slot_dialog_closed)
+        self.dialog_change_index.show()
 
     def __is_rule_invalid(self) -> bool:
         return not self.config.rules

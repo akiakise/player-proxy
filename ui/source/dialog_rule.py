@@ -59,4 +59,6 @@ class Ui_Dialog(object):
         self.label_app_value.setText(_translate("Dialog", "TextLabel"))
         self.pushButton_confirm.setText(_translate("Dialog", "Confirm"))
         self.pushButton_cancel.setText(_translate("Dialog", "Cancel"))
+
+
 from ui.util.ClickableLabel import ClickableLabel

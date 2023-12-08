@@ -5,7 +5,7 @@ from typing import List, AnyStr
 from PyQt5.QtWidgets import QMessageBox
 
 DEFAULT_ENCODING = 'utf-8'
-PROJECT_NAME = 'fae'
+PROJECT_NAME = 'player-proxy'
 MB = 1024 * 1024
 MINUTE = 60 * 1000
 DATE_FORMAT = '%Y-%m-%d'
@@ -13,7 +13,6 @@ DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
 def get_project_path():
-    os.chdir(os.path.join(os.path.dirname(__file__), '../'))
     return os.path.abspath(os.getcwd())
 
 
@@ -31,19 +30,19 @@ class Rule:
         self.folder = folder
         self.app = app
 
-    def to_dict(self):
-        return {
-            'index': self.index,
-            'folder': self.folder,
-            'app': self.app
-        }
-
     def __repr__(self):
         return f'Rule[folder={self.folder}, app={self.app}]'
 
     @staticmethod
     def parse(d: dict):
         return Rule(d.get('index'), d.get('folder'), d.get('app'))
+
+    def to_dict(self):
+        return {
+            'index': self.index,
+            'folder': self.folder,
+            'app': self.app
+        }
 
 
 class Config:
@@ -55,13 +54,6 @@ class Config:
             self.apps = apps  # type: List[AnyStr]
         self.fallback = fallback  # type: AnyStr
 
-    def to_dict(self):
-        return {
-            'rules': [rule.to_dict() for rule in self.rules],
-            'apps': self.apps,
-            'fallback': self.fallback,
-        }
-
     def __repr__(self):
         return f'Config[rules={self.rules}, apps={self.apps}, fallback={self.fallback}]'
 
@@ -70,6 +62,13 @@ class Config:
         return Config([Rule.parse(rule) for rule in d.get('rules')],
                       d.get('fallback'),
                       d.get('apps'))
+
+    def to_dict(self):
+        return {
+            'rules': [rule.to_dict() for rule in self.rules],
+            'fallback': self.fallback,
+            'apps': self.apps,
+        }
 
 
 def load_config():
